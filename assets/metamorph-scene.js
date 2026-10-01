@@ -11,14 +11,14 @@
 
   /* ===== Configuration ===== */
   var T = {                      // one cycle, in seconds; the scene loops on its own
-    crawl: [0, 3.2],
-    hang: [3.2, 4.0],
-    pupate: [4.0, 5.2],
-    ripen: [5.2, 5.8],           // chrysalis turns clear and the wings show through
-    emerge: [5.8, 7.0],          // shell splits, wings pump open
-    fly: [7.2, 9.4],             // a lap around the page and back to the same spot
-    fade: [9.7, 10.0],           // the scene dims before it starts again
-    cycle: 10
+    crawl: [0, 2.2],
+    hang: [2.2, 2.8],
+    pupate: [2.8, 3.7],
+    ripen: [3.7, 4.1],           // chrysalis turns clear and the wings show through
+    emerge: [4.1, 4.9],          // shell splits, wings pump open
+    fly: [5.0, 6.5],             // a lap around the page and back to the same spot
+    fade: [6.75, 7.0],           // the scene dims before it starts again
+    cycle: 7
   };
   var COLORS = {
     twig: '#5d5a6e', leaf: 'rgba(118, 156, 112, 0.35)',
@@ -155,7 +155,7 @@
   document.body.appendChild(flyer);
 
   /* ----- caterpillar geometry ----- */
-  var STRIDE = 22, CYCLE = 0.6, MOVE = 0.42;   // a step every CYCLE seconds; each segment moves for MOVE of it
+  var STRIDE = 22, CYCLE = 0.42, MOVE = 0.42;   // a step every CYCLE seconds; each segment moves for MOVE of it
   var START_X = 150;
   function crawlPose(t) {
     // the classic travelling wave: the tail lifts first and the hump rolls forward to the head
@@ -371,6 +371,6 @@
     if (visible && state === 'idle') { state = 'playing'; t0 = performance.now(); raf = requestAnimationFrame(loop); }
     else if (visible) resume();
     // off screen it holds still (unless the butterfly is mid-flight) and picks up where it left off
-  }, { threshold: 0.6 }).observe(wrap);
+  }, { threshold: 0.35 }).observe(wrap);
   document.addEventListener('visibilitychange', function () { if (!document.hidden && visible) resume(); });
 })();
