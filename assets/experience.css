@@ -43,9 +43,16 @@ canvas.stars {
   backdrop-filter: blur(14px) saturate(140%);
   border-bottom: 1px solid var(--rule);
   transform: translateY(-110%);
-  transition: transform 0.45s cubic-bezier(.2,.7,.2,1);
+  visibility: hidden;
+  /* exit runs faster than enter; visibility keeps the hidden bar out of the tab order */
+  transition: transform 0.28s cubic-bezier(.4,0,1,1), visibility 0s linear 0.28s;
 }
-.readerbar[data-visible="true"] { transform: none; }
+.readerbar[data-visible="true"] {
+  transform: none; visibility: visible;
+  transition: transform 0.45s cubic-bezier(.2,.7,.2,1), visibility 0s;
+}
+/* keep anchored chapters and focused elements clear of the reader bar */
+html { scroll-padding-top: calc(4.5rem + env(safe-area-inset-top, 0px)); }
 .readerbar .rb-row {
   max-width: 60rem; margin: 0 auto; padding: 0.55rem 16px;
   display: flex; align-items: center; gap: 0.9rem;
