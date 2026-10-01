@@ -32,7 +32,6 @@
 /* ---------- the living scene in chapter III (metamorph-scene.js) ---------- */
 .mscene { position: relative; margin: 2.6rem auto; max-width: 40rem; text-align: center; }
 .mscene svg { display: block; width: 100%; height: auto; overflow: visible; }
-.mscene-replay { margin-top: 0.4rem; }
 .mscene-flyer {
   position: fixed; left: 0; top: 0; width: 92px; height: 92px; z-index: 30;
   pointer-events: none; opacity: 0; transform-origin: 46px 46px; will-change: transform;

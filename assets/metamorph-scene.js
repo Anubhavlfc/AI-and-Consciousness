@@ -10,14 +10,15 @@
   if (!still) return;
 
   /* ===== Configuration ===== */
-  var T = {                      // timeline, in seconds from the start of the scene
-    crawl: [0, 6.6],
-    hang: [6.6, 8.6],
-    pupate: [8.6, 11.6],
-    ripen: [11.6, 13.4],         // chrysalis turns clear and the wings show through
-    emerge: [13.4, 16.6],        // shell splits, wings pump open
-    rest: [16.6, 18.0],
-    flight: 13                   // seconds the flight around the page takes (before hovers)
+  var T = {                      // one cycle, in seconds; the scene loops on its own
+    crawl: [0, 3.2],
+    hang: [3.2, 4.0],
+    pupate: [4.0, 5.2],
+    ripen: [5.2, 5.8],           // chrysalis turns clear and the wings show through
+    emerge: [5.8, 7.0],          // shell splits, wings pump open
+    fly: [7.2, 9.4],             // a lap around the page and back to the same spot
+    fade: [9.7, 10.0],           // the scene dims before it starts again
+    cycle: 10
   };
   var COLORS = {
     twig: '#5d5a6e', leaf: 'rgba(118, 156, 112, 0.35)',
@@ -82,12 +83,6 @@
   wrap.setAttribute('aria-label', 'A caterpillar crawls along a twig, becomes a chrysalis, and emerges as a butterfly');
   var svg = el('svg', { viewBox: '0 0 ' + VB.w + ' ' + VB.h, role: 'img', 'aria-hidden': 'true' });
   wrap.appendChild(svg);
-  var replay = document.createElement('button');
-  replay.type = 'button';
-  replay.className = 'xp-btn mscene-replay';
-  replay.textContent = 'Watch again';
-  replay.hidden = true;
-  wrap.appendChild(replay);
 
   var defs = el('defs', {}, svg);
   var gb = el('radialGradient', { id: 'ms-body', cx: 0.4, cy: 0.35, r: 0.7 }, defs);
@@ -160,8 +155,8 @@
   document.body.appendChild(flyer);
 
   /* ----- caterpillar geometry ----- */
-  var STRIDE = 24, CYCLE = 0.92, MOVE = 0.42;  // a step every CYCLE seconds; each segment moves for MOVE of it
-  var START_X = 70;
+  var STRIDE = 22, CYCLE = 0.6, MOVE = 0.42;   // a step every CYCLE seconds; each segment moves for MOVE of it
+  var START_X = 150;
   function crawlPose(t) {
     // the classic travelling wave: the tail lifts first and the hump rolls forward to the head
     var pts = [];
@@ -302,88 +297,80 @@
       y: 0.5 * ((2 * p1.y) + (-p0.y + p2.y) * t + (2 * p0.y - 5 * p1.y + 4 * p2.y - p3.y) * t2 + (-p0.y + 3 * p1.y - 3 * p2.y + p3.y) * t3)
     };
   }
-  function startFlight(now) {
+  function startFlight() {
     var vw = window.innerWidth, vh = window.innerHeight, h = homeOnScreen();
     var side = h.x > vw / 2 ? -1 : 1;
-    var frac = [[0.5 + 0.3 * side, 0.22], [0.5 + 0.42 * side, 0.55], [0.5 + 0.1 * side, 0.82], [0.5 - 0.35 * side, 0.62], [0.5 - 0.42 * side, 0.26], [0.5 - 0.05 * side, 0.12]];
+    var frac = [[0.5 + 0.32 * side, 0.24], [0.5 + 0.1 * side, 0.78], [0.5 - 0.34 * side, 0.5], [0.5 - 0.05 * side, 0.16]];
     flight = {
-      start: now, u: 0, from: h,
-      way: frac.map(function (f) { return { x: f[0] * vw, y: f[1] * vh }; }),
-      heading: 0, flap: 0, last: now, prev: null, scrollY0: window.scrollY
+      from: h, heading: 0, flap: 0, last: performance.now(), prev: null, scrollY0: window.scrollY,
+      way: frac.map(function (f) { return { x: f[0] * vw, y: f[1] * vh }; })
     };
     state = 'flying';
     sceneBfWrap.setAttribute('opacity', 0);
     flyer.style.opacity = 1;
   }
-  function flightFrame(now) {
+  function flightFrame(now, u) {
     var f = flight, dt = Math.min(0.05, (now - f.last) / 1000); f.last = now;
     var h = homeOnScreen();
     // waypoints are screen positions; the start and the landing spot move with the page
     var dy = window.scrollY - f.scrollY0;
-    var pts = [f.from].concat(f.way.map(function (p) { return { x: p.x, y: p.y }; }), [h]);
-    pts[0] = { x: f.from.x, y: f.from.y - dy };
+    var pts = [{ x: f.from.x, y: f.from.y - dy }].concat(f.way, [h]);
     var segs = pts.length - 1;
-    // unhurried speed with two brief hovers along the way
-    var hover = (f.u > 0.32 && f.u < 0.36) || (f.u > 0.66 && f.u < 0.69) ? 0.18 : 1;
-    var landing = f.u > 0.9 ? lerp(1, 0.6, (f.u - 0.9) / 0.1) : 1;
-    f.u = Math.min(1, f.u + dt / T.flight * hover * landing * (f.u < 0.04 ? 0.6 : 1));
-    var x = f.u * segs, i = Math.min(segs - 1, Math.floor(x)), t = x - i;
+    var x = u * segs, i = Math.min(segs - 1, Math.floor(x)), t = x - i;
     var p = catmull(pts[Math.max(0, i - 1)], pts[i], pts[i + 1], pts[Math.min(segs, i + 2)], t);
     if (f.prev) {
       var vx = p.x - f.prev.x, vy = p.y - f.prev.y;
-      if (vx * vx + vy * vy > 0.01) f.heading = lerp(f.heading, clamp(Math.atan2(vx, -vy) * 180 / Math.PI, -70, 70), Math.min(1, dt * 3));
+      if (vx * vx + vy * vy > 0.01) f.heading = lerp(f.heading, clamp(Math.atan2(vx, -vy) * 180 / Math.PI, -70, 70), Math.min(1, dt * 4));
     }
     f.prev = p;
-    var nearHome = clamp((1 - f.u) / 0.08, 0, 1);
-    var heading = f.heading * nearHome;
-    var hz = hover < 1 ? 2.5 : 5.5;
-    f.flap += dt * hz * Math.PI * 2;
-    var open = lerp(1, 0.2 + 0.8 * Math.abs(Math.cos(f.flap)), nearHome);
-    flyBf.set(open);
+    var nearHome = clamp((1 - u) / 0.08, 0, 1);
+    f.flap += dt * 6 * Math.PI * 2;
+    flyBf.set(lerp(1, 0.2 + 0.8 * Math.abs(Math.cos(f.flap)), nearHome));
     // the flyer is a little larger mid-flight, as if closer to the reader
-    var s = h.s * (1 + 0.25 * Math.sin(Math.PI * f.u));
-    flyer.style.transform = 'translate(' + (p.x - 46).toFixed(1) + 'px,' + (p.y - 46).toFixed(1) + 'px) rotate(' + heading.toFixed(1) + 'deg) scale(' + s.toFixed(3) + ')';
-    if (f.u >= 1) land();
+    var s = h.s * (1 + 0.25 * Math.sin(Math.PI * u));
+    flyer.style.transform = 'translate(' + (p.x - 46).toFixed(1) + 'px,' + (p.y - 46).toFixed(1) + 'px) rotate(' + (f.heading * nearHome).toFixed(1) + 'deg) scale(' + s.toFixed(3) + ')';
   }
   function land() {
     state = 'resting';
     flyer.style.opacity = 0;
     sceneBfWrap.setAttribute('opacity', 1);
     sceneBfWrap.setAttribute('transform', 'translate(' + bfHome.x + ',' + bfHome.y + ')');
-    replay.hidden = false;
   }
 
-  /* ----- loop ----- */
+  /* ----- loop: crawl, pupate, emerge, fly a lap, land, fade, again ----- */
   function loop(now) {
     raf = 0;
-    if (state === 'playing') {
-      var t = (now - t0) / 1000;
-      renderScene(t);
-      if (t >= T.rest[1]) startFlight(now);
-    } else if (state === 'flying') {
-      renderScene(T.rest[1]);
-      flightFrame(now);
-    } else if (state === 'resting') {
-      sceneBf.set(restOpen(now / 1000));
+    var t = (now - t0) / 1000;
+    if (t >= T.cycle) { t0 += T.cycle * 1000; t -= T.cycle; state = 'playing'; flyer.style.opacity = 0; }
+    if (t < T.fly[0]) {
+      state = 'playing';
+      renderScene(Math.min(t, T.emerge[1]));
+    } else if (t < T.fly[1]) {
+      if (state !== 'flying') { renderScene(T.emerge[1]); startFlight(); }
+      // eased so it lifts off and settles gently
+      flightFrame(now, ease(phase(t, T.fly)));
+    } else {
+      if (state !== 'resting') land();
+      sceneBf.set(restOpen(t - T.fly[1]));
     }
-    if (state !== 'idle' && !document.hidden && (state !== 'resting' || visible)) raf = requestAnimationFrame(loop);
+    var fadeIn = clamp(t / 0.3, 0, 1), fadeOut = 1 - phase(t, T.fade);
+    svg.style.opacity = Math.min(fadeIn, fadeOut).toFixed(3);
+    if (!document.hidden && (visible || state === 'flying')) raf = requestAnimationFrame(loop);
+    else pausedAt = now;
   }
-  function play() {
-    state = 'playing'; t0 = performance.now(); replay.hidden = true;
-    flyer.style.opacity = 0;
-    if (!raf) raf = requestAnimationFrame(loop);
+  function resume() {
+    if (raf || state === 'idle') return;
+    t0 += performance.now() - pausedAt;
+    raf = requestAnimationFrame(loop);
   }
-  replay.addEventListener('click', play);
 
   renderScene(0);
-  var visible = false;
+  var visible = false, pausedAt = 0;
   new IntersectionObserver(function (entries) {
     visible = entries[0].isIntersecting;
-    if (visible && state === 'idle') play();
-    // the scene pauses off screen until the butterfly is in the air
-    if (state === 'playing' && !visible) { state = 'paused'; wrap.pausedAt = performance.now(); }
-    else if (state === 'paused' && visible) { t0 += performance.now() - wrap.pausedAt; state = 'playing'; }
-    if (!raf && state !== 'idle' && state !== 'paused') raf = requestAnimationFrame(loop);
+    if (visible && state === 'idle') { state = 'playing'; t0 = performance.now(); raf = requestAnimationFrame(loop); }
+    else if (visible) resume();
+    // off screen it holds still (unless the butterfly is mid-flight) and picks up where it left off
   }, { threshold: 0.6 }).observe(wrap);
-  document.addEventListener('visibilitychange', function () { if (!document.hidden && !raf && (state === 'playing' || state === 'flying' || state === 'resting')) raf = requestAnimationFrame(loop); });
+  document.addEventListener('visibilitychange', function () { if (!document.hidden && visible) resume(); });
 })();

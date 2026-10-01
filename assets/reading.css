@@ -136,17 +136,12 @@ footer a { text-decoration: none; }
 @media (prefers-reduced-motion: reduce) { .hero-line path, .hero-line circle { animation: none; } }
 
 /* ---------- The Bridge: ape becomes human, human becomes robot ----------
-   The figures are white prints on transparent PNGs. On arrival the ape appears,
-   a ghost of it walks forward and dissolves into the human, and a ghost of the
-   human walks on and dissolves into the robot. Slow on purpose; timing below. */
-.bridge-fig {
-  margin: 2.4rem -16px 2.6rem; text-align: center;
-  --bf-ape: 0.2s;      /* ape appears */
-  --bf-human: 2.8s;    /* ape starts turning into the human */
-  --bf-robot: 7.4s;    /* human starts turning into the robot */
-  --bf-morph: 4s;      /* length of each transformation */
-}
-.bf-stage { position: relative; display: flex; text-align: left; }
+   The figures are white prints on transparent PNGs. Once the figure is in view
+   it loops on its own: the ape appears, a ghost of it walks forward and dissolves
+   into the human, a ghost of the human dissolves into the robot, the three hold
+   together for a moment, then fade and it begins again. One cycle = --bf-cycle. */
+.bridge-fig { margin: 2.4rem -16px 2.6rem; --bf-cycle: 10s; }
+.bf-stage { position: relative; display: flex; }
 .bf-stage img { display: block; min-width: 0; height: auto; }
 .bf-fig.f1 { flex: 410 1 0; }
 .bf-fig.f2 { flex: 362 1 0; }
@@ -155,33 +150,61 @@ footer a { text-decoration: none; }
 .bf-ghost { position: absolute; top: 0; opacity: 0; pointer-events: none; }
 .bf-ghost.g1 { left: 0; width: 35.04%; --to: 94%; }
 .bf-ghost.g2 { left: 35.04%; width: 30.94%; --to: 105%; }
-
-.xp-reveal .bridge-fig:not(.is-in) .bf-fig { opacity: 0; }
-.xp-reveal .bridge-fig.is-in .f1 { animation: bf-appear 2s var(--ease-out) var(--bf-ape) both; }
-.xp-reveal .bridge-fig.is-in .g1 { animation: bf-ghost var(--bf-morph) ease-in-out var(--bf-human) both; }
-.xp-reveal .bridge-fig.is-in .f2 { animation: bf-become var(--bf-morph) ease-in-out calc(var(--bf-human) + 0.5s) both; }
-.xp-reveal .bridge-fig.is-in .g2 { animation: bf-ghost var(--bf-morph) ease-in-out var(--bf-robot) both; }
-.xp-reveal .bridge-fig.is-in .f3 { animation: bf-become var(--bf-morph) ease-in-out calc(var(--bf-robot) + 0.5s) both; }
-@keyframes bf-appear { from { opacity: 0; filter: blur(6px); } to { opacity: 1; filter: none; } }
-/* the old form walks forward, thins and blurs away */
-@keyframes bf-ghost {
-  0%   { opacity: 0; transform: none; filter: none; }
-  12%  { opacity: 0.85; }
-  100% { opacity: 0; transform: translateX(var(--to)); filter: blur(10px); }
-}
-/* the new form condenses out of it, arriving from behind */
-@keyframes bf-become {
-  0%   { opacity: 0; transform: translateX(-38%); filter: blur(12px); }
-  55%  { opacity: 0.7; filter: blur(4px); }
-  100% { opacity: 1; transform: none; filter: none; }
-}
 .bf-ground {
   position: absolute; left: 6%; right: 6%; bottom: 13%; height: 1px;
   background: linear-gradient(90deg, transparent, var(--rule) 15%, var(--teal) 50%, var(--rule) 85%, transparent);
   transform-origin: left; opacity: 0.6;
 }
-.xp-reveal .bridge-fig .bf-ground { transform: scaleX(0); }
-.xp-reveal .bridge-fig.is-in .bf-ground { transform: none; transition: transform 11s cubic-bezier(.3, 0, .3, 1) var(--bf-ape); }
+
+.bridge-fig.bf-live .f1 { animation: bf-ape var(--bf-cycle) linear infinite; }
+.bridge-fig.bf-live .g1 { animation: bf-ghost1 var(--bf-cycle) linear infinite; }
+.bridge-fig.bf-live .f2 { animation: bf-human var(--bf-cycle) linear infinite; }
+.bridge-fig.bf-live .g2 { animation: bf-ghost2 var(--bf-cycle) linear infinite; }
+.bridge-fig.bf-live .f3 { animation: bf-robot var(--bf-cycle) linear infinite; }
+.bridge-fig.bf-live .bf-ground { animation: bf-ground var(--bf-cycle) linear infinite; }
+.bridge-fig.bf-live .bf-labels li:nth-child(1) { animation: bf-l1 var(--bf-cycle) linear infinite; }
+.bridge-fig.bf-live .bf-labels li:nth-child(2) { animation: bf-l2 var(--bf-cycle) linear infinite; }
+.bridge-fig.bf-live .bf-labels li:nth-child(3) { animation: bf-l3 var(--bf-cycle) linear infinite; }
+/* off screen the loop holds still instead of running unseen */
+.bridge-fig.bf-off * { animation-play-state: paused !important; }
+
+/* 0-10% ape appears · 15-45% ape becomes human · 48-78% human becomes robot · hold · 88-97% all fade */
+@keyframes bf-ape {
+  0%       { opacity: 0; filter: blur(6px); animation-timing-function: ease-out; }
+  10%, 88% { opacity: 1; filter: blur(0); animation-timing-function: ease-in; }
+  97%, 100% { opacity: 0; filter: blur(4px); }
+}
+@keyframes bf-ghost1 {
+  0%, 15%  { opacity: 0; transform: none; filter: blur(0); animation-timing-function: ease-out; }
+  19%      { opacity: 0.85; transform: translateX(calc(var(--to) * 0.08)); animation-timing-function: ease-in-out; }
+  45%, 100% { opacity: 0; transform: translateX(var(--to)); filter: blur(10px); }
+}
+@keyframes bf-human {
+  0%, 20%  { opacity: 0; transform: translateX(-38%); filter: blur(12px); animation-timing-function: ease-in-out; }
+  34%      { opacity: 0.7; filter: blur(4px); animation-timing-function: ease-out; }
+  45%, 88% { opacity: 1; transform: none; filter: blur(0); animation-timing-function: ease-in; }
+  97%, 100% { opacity: 0; transform: none; filter: blur(4px); }
+}
+@keyframes bf-ghost2 {
+  0%, 48%  { opacity: 0; transform: none; filter: blur(0); animation-timing-function: ease-out; }
+  52%      { opacity: 0.85; transform: translateX(calc(var(--to) * 0.08)); animation-timing-function: ease-in-out; }
+  78%, 100% { opacity: 0; transform: translateX(var(--to)); filter: blur(10px); }
+}
+@keyframes bf-robot {
+  0%, 53%  { opacity: 0; transform: translateX(-38%); filter: blur(12px); animation-timing-function: ease-in-out; }
+  67%      { opacity: 0.7; filter: blur(4px); animation-timing-function: ease-out; }
+  78%, 88% { opacity: 1; transform: none; filter: blur(0); animation-timing-function: ease-in; }
+  97%, 100% { opacity: 0; transform: none; filter: blur(4px); }
+}
+@keyframes bf-ground {
+  0%       { transform: scaleX(0); opacity: 0.6; }
+  80%, 88% { transform: none; opacity: 0.6; }
+  97%, 100% { transform: none; opacity: 0; }
+}
+@keyframes bf-l1 { 0%, 4% { opacity: 0.15; } 12%, 88% { opacity: 1; } 97%, 100% { opacity: 0.15; } }
+@keyframes bf-l2 { 0%, 38% { opacity: 0.15; } 46%, 88% { opacity: 1; } 97%, 100% { opacity: 0.15; } }
+@keyframes bf-l3 { 0%, 71% { opacity: 0.15; } 79%, 88% { opacity: 1; } 97%, 100% { opacity: 0.15; } }
+
 .bf-labels { list-style: none; margin: 0.4rem 0 0; padding: 0; position: relative; height: 2.6rem; }
 .bf-labels li {
   position: absolute; left: var(--x); transform: translateX(-50%);
@@ -194,16 +217,8 @@ footer a { text-decoration: none; }
   background: var(--teal); box-shadow: 0 0 0 4px rgba(127, 227, 224, 0.15), 0 0 14px var(--teal);
 }
 .bf-labels li:not(.here)::before { content: ""; display: block; width: 5px; height: 5px; margin: 0.1rem auto 0.55rem; border-radius: 50%; border: 1px solid var(--ink-faint); }
-.bf-labels li { transition: opacity 1.4s var(--ease-out); }
-.xp-reveal .bridge-fig .bf-labels li { opacity: 0.15; }
-.xp-reveal .bridge-fig.is-in .bf-labels li { opacity: 1; }
-.xp-reveal .bridge-fig.is-in .bf-labels li:nth-child(1) { transition-delay: 1.2s; }
-.xp-reveal .bridge-fig.is-in .bf-labels li:nth-child(2) { transition-delay: calc(var(--bf-human) + 3.4s); }
-.xp-reveal .bridge-fig.is-in .bf-labels li:nth-child(3) { transition-delay: calc(var(--bf-robot) + 3.4s); }
-.bf-replay { margin-top: 0.6rem; }
-.bf-replay[hidden] { display: none; }
 @media (max-width: 560px) {
   .bf-labels { height: 3.4rem; }
   .bf-labels li { font-size: 0.56rem; letter-spacing: 0.14em; white-space: normal; width: 6.5rem; }
 }
-@media (prefers-reduced-motion: reduce) { .bf-stage img, .bf-ground, .bf-labels li { animation: none !important; transition: none !important; } .bf-ghost { display: none; } }
+@media (prefers-reduced-motion: reduce) { .bf-stage img, .bf-ground, .bf-labels li { animation: none !important; } .bf-ghost { display: none; } }
