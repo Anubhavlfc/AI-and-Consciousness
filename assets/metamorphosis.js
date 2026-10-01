@@ -12,7 +12,7 @@
     // progress s. Selectors are essay landmarks; s runs 0 → 1.
     anchors: [
       { at: '#question', edge: 'top', s: 0.00 },
-      { at: '#metamorphosis .metamorph', edge: 'top', s: 0.22 },
+      { at: '#metamorphosis .metamorph:not([hidden]), #metamorphosis .mscene', edge: 'top', s: 0.22 },
       { at: '#metamorphosis', edge: 'bottom', s: 0.30 },
       { at: '#flesh', edge: 'top', s: 0.38 },
       { at: '#looking-back', edge: 'top', s: 0.50 },

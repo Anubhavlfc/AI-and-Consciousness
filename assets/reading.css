@@ -134,3 +134,42 @@ footer a { text-decoration: none; }
 @keyframes line-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes line-dot { from { opacity: 0; transform: scale(0.2); } to { opacity: 1; transform: none; } }
 @media (prefers-reduced-motion: reduce) { .hero-line path, .hero-line circle { animation: none; } }
+
+/* ---------- The Bridge: ape, human, robot, revealed one after another ---------- */
+.bridge-fig { margin: 2.4rem -16px 2.6rem; }
+.bf-stage { position: relative; display: flex; }
+.bf-stage img {
+  display: block; min-width: 0; height: auto;
+  /* the print is toned white-on-black, so screen blending lets the night show through */
+  mix-blend-mode: screen;
+  /* revealed with a left-to-right wipe: opacity or transforms here would break the blend mid-animation */
+  clip-path: inset(0 0 0 0);
+  transition: clip-path 1.3s var(--ease-out) calc(var(--i) * 900ms + 200ms);
+}
+.bf-stage img:nth-child(1) { flex: 410 1 0; }
+.bf-stage img:nth-child(2) { flex: 362 1 0; }
+.bf-stage img:nth-child(3) { flex: 398 1 0; }
+.xp-reveal .bridge-fig:not(.is-in) .bf-stage img { clip-path: inset(0 100% 0 0); transition: none; }
+.bf-ground {
+  position: absolute; left: 6%; right: 6%; bottom: 13%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--rule) 15%, var(--teal) 50%, var(--rule) 85%, transparent);
+  transform-origin: left; transition: transform 2.8s var(--ease-out) 200ms; opacity: 0.6;
+}
+.xp-reveal .bridge-fig:not(.is-in) .bf-ground { transform: scaleX(0); transition: none; }
+.bf-labels { list-style: none; margin: 0.4rem 0 0; padding: 0; position: relative; height: 2.6rem; }
+.bf-labels li {
+  position: absolute; left: var(--x); transform: translateX(-50%);
+  white-space: nowrap; text-align: center;
+  font-family: var(--display); font-size: 0.66rem; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-faint);
+}
+.bf-labels li.here { color: var(--teal); }
+.bf-labels li.here::before {
+  content: ""; display: block; width: 7px; height: 7px; margin: 0 auto 0.5rem; border-radius: 50%;
+  background: var(--teal); box-shadow: 0 0 0 4px rgba(127, 227, 224, 0.15), 0 0 14px var(--teal);
+}
+.bf-labels li:not(.here)::before { content: ""; display: block; width: 5px; height: 5px; margin: 0.1rem auto 0.55rem; border-radius: 50%; border: 1px solid var(--ink-faint); }
+@media (max-width: 560px) {
+  .bf-labels { height: 3.4rem; }
+  .bf-labels li { font-size: 0.56rem; letter-spacing: 0.14em; white-space: normal; width: 6.5rem; }
+}
+@media (prefers-reduced-motion: reduce) { .bf-stage img, .bf-ground { transition: none; } }

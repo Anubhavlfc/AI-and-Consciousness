@@ -28,3 +28,14 @@
 .metamorphosis[data-mode="docked"] { width: 100%; height: 100%; }
 .metamorphosis[data-mode="docked"] .mm-svg { display: block; width: 100%; height: 100%; }
 .metamorphosis[data-mode="docked"] .mm-caption { display: none; }
+
+/* ---------- the living scene in chapter III (metamorph-scene.js) ---------- */
+.mscene { position: relative; margin: 2.6rem auto; max-width: 40rem; text-align: center; }
+.mscene svg { display: block; width: 100%; height: auto; overflow: visible; }
+.mscene-replay { margin-top: 0.4rem; }
+.mscene-flyer {
+  position: fixed; left: 0; top: 0; width: 92px; height: 92px; z-index: 30;
+  pointer-events: none; opacity: 0; transform-origin: 46px 46px; will-change: transform;
+  filter: drop-shadow(0 0 10px rgba(185, 164, 255, 0.35));
+}
+.mscene-flyer svg { display: block; width: 100%; height: 100%; overflow: visible; }
