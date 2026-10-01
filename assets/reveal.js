@@ -43,3 +43,35 @@
     });
   });
 })();
+
+/* The Bridge: once the ape-to-robot transformation has played, offer to play it again. */
+(function () {
+  'use strict';
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var fig = document.querySelector('.bridge-fig');
+  var btn = fig && fig.querySelector('.bf-replay');
+  if (!btn) return;
+  var root = document.documentElement, timer, armed = false;
+  var DURATION = 12500; // matches --bf-robot + --bf-morph + the label fade in reading.css
+
+  function arm() {
+    btn.hidden = true;
+    clearTimeout(timer);
+    timer = setTimeout(function () { btn.hidden = false; }, DURATION);
+  }
+  function check() {
+    if (!armed && root.classList.contains('xp-reveal') && fig.classList.contains('is-in')) { armed = true; arm(); }
+  }
+  // no staged reveal on this load (figure was already on screen): it shows complete, so offer a play
+  if (!root.classList.contains('xp-reveal')) btn.hidden = false;
+  new MutationObserver(check).observe(fig, { attributes: true, attributeFilter: ['class'] });
+  check();
+
+  btn.addEventListener('click', function () {
+    root.classList.add('xp-reveal');
+    fig.classList.remove('is-in');
+    void fig.offsetWidth; // restart the CSS animations
+    fig.classList.add('is-in');
+    arm();
+  });
+})();
