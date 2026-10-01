@@ -248,7 +248,7 @@
   }
 
   /* ----- avoid sitting over wide text that leaves the column ----- */
-  var avoid = Array.prototype.slice.call(document.querySelectorAll('.coda .words, .question, .hero > div, .endnote'));
+  var avoid = Array.prototype.slice.call(document.querySelectorAll('.coda .words, .question, .hero > div'));
   function overText(px, py) {
     if (mode !== 'lane') return false;
     var X = lane.x + px, Y = py;
