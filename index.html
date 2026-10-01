@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Essays by Anubhav Adhikari</title>
+<meta name="description" content="Long-form essays by Anubhav Adhikari on intelligence, consciousness, and technology.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=Cormorant+Garamond:ital@1&family=EB+Garamond:wght@400;500&display=swap">
+<style>
+:root {
+  --night: #0b0d24; --ink: #d9dcef; --ink-soft: #a6abcb; --ink-faint: #6d7299;
+  --violet: #b9a4ff; --teal: #7fe3e0; --rule: rgba(185, 164, 255, 0.22);
+  --display: "Cinzel", "Times New Roman", serif;
+  --quote: "Cormorant Garamond", Garamond, serif;
+  --body: "EB Garamond", Garamond, Georgia, serif;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; min-height: 100vh;
+  background: var(--night);
+  background-image: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(80, 70, 170, 0.22), transparent 70%);
+  color: var(--ink); font-family: var(--body); font-size: 1.15rem; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 44rem; margin: 0 auto; padding: clamp(4rem, 12vh, 8rem) 16px 4rem; }
+header p { font-family: var(--display); font-size: 0.72rem; letter-spacing: 0.42em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 1rem; }
+h1 { font-family: var(--display); font-weight: 500; font-size: clamp(2.2rem, 1.6rem + 3vw, 3.6rem); letter-spacing: 0.06em; line-height: 1.05; margin: 0; color: #f4f2ff; }
+.intro { font-family: var(--quote); font-style: italic; font-size: 1.35rem; color: var(--ink-soft); margin: 1rem 0 0; }
+ul { list-style: none; margin: 3.5rem 0 0; padding: 0; border-top: 1px solid var(--rule); }
+li { border-bottom: 1px solid var(--rule); }
+.essay { display: grid; grid-template-columns: 7rem 1fr; gap: 1.5rem; padding: 1.6rem 0; color: inherit; text-decoration: none; align-items: center; }
+.essay img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; border-radius: 3px; }
+.essay h2 { font-family: var(--display); font-weight: 400; font-size: 1.5rem; letter-spacing: 0.05em; margin: 0; color: #f4f2ff; }
+.essay p { margin: 0.4rem 0 0; color: var(--ink-soft); }
+.essay small { display: block; margin-top: 0.6rem; font-family: var(--display); font-size: 0.66rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--teal); }
+.essay:hover h2, .essay:focus-visible h2 { color: var(--violet); }
+.essay:focus-visible { outline: 2px solid var(--teal); outline-offset: 4px; }
+footer { margin-top: 4rem; font-size: 0.9rem; color: var(--ink-faint); }
+@media (max-width: 480px) { .essay { grid-template-columns: 5rem 1fr; gap: 1rem; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <p>Essays</p>
+    <h1>Anubhav Adhikari</h1>
+    <p class="intro">Long-form thinking on intelligence, consciousness, and what comes next.</p>
+  </header>
+  <ul>
+    <li>
+      <a class="essay" href="not-the-final-form/">
+        <img src="not-the-final-form/img/cover.jpg" alt="">
+        <div>
+          <h2>Not the Final Form</h2>
+          <p>Intelligence, consciousness, and whether humanity is a bridge.</p>
+          <small>October 2026 · 7 min read</small>
+        </div>
+      </a>
+    </li>
+  </ul>
+  <footer>© 2026 Anubhav Adhikari</footer>
+</div>
+</body>
+</html>
