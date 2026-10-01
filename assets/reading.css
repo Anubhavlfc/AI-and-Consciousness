@@ -140,7 +140,7 @@ footer a { text-decoration: none; }
    it loops on its own: the ape appears, a ghost of it walks forward and dissolves
    into the human, a ghost of the human dissolves into the robot, the three hold
    together for a moment, then fade and it begins again. One cycle = --bf-cycle. */
-.bridge-fig { margin: 2.4rem -16px 2.6rem; --bf-cycle: 10s; }
+.bridge-fig { margin: 2.4rem -16px 2.6rem; --bf-cycle: 6s; }
 .bf-stage { position: relative; display: flex; }
 .bf-stage img { display: block; min-width: 0; height: auto; }
 .bf-fig.f1 { flex: 410 1 0; }
