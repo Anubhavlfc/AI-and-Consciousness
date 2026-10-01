@@ -1,0 +1,136 @@
+/* Reading layer: the design system (type, spacing, measure, motion timing),
+   the scroll-driven atmosphere, section reveals and link/button feedback.
+   Loaded after each page's own <style>, so it refines rather than replaces. */
+
+:root {
+  /* measure: 44rem column minus the 16px gutters ≈ 672px of text */
+  --measure: 44rem;
+  --text-size: clamp(1.125rem, 1.04rem + 0.36vw, 1.3rem);
+  --leading: 1.74;
+  --para-gap: 1.3em;
+  --chapter-gap: clamp(5rem, 11vw, 8.5rem);
+
+  /* motion tokens: change timing here, not in the components */
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+  --ease-in: cubic-bezier(.4, 0, 1, 1);
+  --dur-quick: 220ms;
+  --dur-reveal: 750ms;
+  --dur-atmo: 60s;
+  --reveal-shift: 20px;
+
+  /* atmosphere palette: earthy at the start, neutral in the middle, open at the end */
+  --atmo-earth-color: 118, 156, 112;
+  --atmo-dusk-color: 74, 78, 128;
+  --atmo-dawn-color: 196, 170, 255;
+  --atmo-amber-color: 242, 198, 140;
+  /* weights are written by metamorphosis.js from the same progress as the creature */
+  --atmo-earth: 1;
+  --atmo-dusk: 0;
+  --atmo-dawn: 0;
+}
+
+/* ---------- typography ---------- */
+body {
+  font-size: var(--text-size);
+  line-height: var(--leading);
+  font-kerning: normal;
+  font-variant-ligatures: common-ligatures;
+}
+.chapter { padding-top: var(--chapter-gap); }
+.chapter p {
+  margin: 0 0 var(--para-gap);
+  text-wrap: pretty;
+  hanging-punctuation: first;
+  font-variant-numeric: oldstyle-nums;
+}
+.chapter .eyebrow { margin-bottom: 2.6rem; }
+.statement { margin: 2.2rem 0 1.8rem; }
+.pull { margin: 3.4rem auto; }
+.lead { margin: 0 0 2rem !important; }
+.question { margin-top: -1.5rem; }
+.coda { margin-top: var(--chapter-gap); }
+@media (max-width: 480px) {
+  :root { --leading: 1.7; --para-gap: 1.2em; }
+  .pull { margin: 2.6rem auto; }
+}
+
+/* ---------- atmosphere ---------- */
+.atmosphere {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+}
+.atmosphere span {
+  position: absolute; inset: -20%;
+  transition: opacity 1.2s linear;
+}
+.atmosphere .earth {
+  opacity: var(--atmo-earth);
+  background: radial-gradient(ellipse 55% 45% at 18% 78%, rgba(var(--atmo-earth-color), 0.13), transparent 70%);
+  animation: atmo-drift var(--dur-atmo) ease-in-out infinite alternate;
+}
+.atmosphere .dusk {
+  opacity: var(--atmo-dusk);
+  background: radial-gradient(ellipse 70% 55% at 50% 50%, rgba(var(--atmo-dusk-color), 0.16), transparent 72%);
+}
+.atmosphere .dawn {
+  opacity: var(--atmo-dawn);
+  background:
+    radial-gradient(ellipse 50% 40% at 82% 18%, rgba(var(--atmo-dawn-color), 0.10), transparent 70%),
+    radial-gradient(ellipse 40% 30% at 70% 30%, rgba(var(--atmo-amber-color), 0.06), transparent 70%);
+  animation: atmo-drift var(--dur-atmo) ease-in-out infinite alternate-reverse;
+}
+/* faint paper grain so the night is not flat */
+.atmosphere::after {
+  content: ""; position: absolute; inset: 0; opacity: 0.05; mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+@keyframes atmo-drift { from { transform: translate3d(-2%, 1%, 0); } to { transform: translate3d(2%, -1.5%, 0); } }
+
+/* ---------- section reveals ---------- */
+.xp-reveal .rv {
+  opacity: 0; transform: translateY(var(--reveal-shift));
+  transition: opacity var(--dur-reveal) var(--ease-out), transform var(--dur-reveal) var(--ease-out);
+}
+.xp-reveal .rv.is-in { opacity: 1; transform: none; }
+.eyebrow::after { transform-origin: left; transition: transform 1.2s var(--ease-out) 150ms; }
+.xp-reveal .eyebrow.rv:not(.is-in)::after { transform: scaleX(0); }
+
+/* the chapter III drawing traces itself when it arrives */
+.metamorph g path, .metamorph g circle { stroke-dasharray: 260; stroke-dashoffset: 0; transition: stroke-dashoffset 2.4s var(--ease-out) 200ms; }
+.xp-reveal .metamorph.rv:not(.is-in) g path, .xp-reveal .metamorph.rv:not(.is-in) g circle { stroke-dashoffset: 260; }
+
+/* ---------- microinteractions ---------- */
+.contents a span:last-child, footer a, .rb-toc a span:last-child {
+  background: linear-gradient(currentColor, currentColor) left bottom / 0 1px no-repeat;
+  transition: background-size 320ms var(--ease-out), color var(--dur-quick);
+  padding-bottom: 1px;
+}
+.contents a:hover span:last-child, .contents a:focus-visible span:last-child,
+footer a:hover, footer a:focus-visible,
+.rb-toc a:hover span:last-child { background-size: 100% 1px; }
+footer a { text-decoration: none; }
+
+.xp-btn, .rb-share { transition: transform var(--dur-quick) var(--ease-out), border-color var(--dur-quick), color var(--dur-quick), background var(--dur-quick); }
+.xp-btn:hover, .rb-share:hover { transform: translateY(-1px); }
+.xp-btn:active, .rb-share:active { transform: translateY(0); }
+
+/* quieter ambient motion so the transformation is the one moving thing */
+.steps::after { display: none; }
+.cue svg { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .xp-reveal .rv { opacity: 1; transform: none; transition: none; }
+  .atmosphere span { animation: none; transition: none; }
+  .metamorph g path, .metamorph g circle { stroke-dashoffset: 0 !important; transition: none; }
+}
+
+/* ---------- hero: a thin line draws itself under the title, the path the butterfly will take ---------- */
+.hero-line { display: block; width: min(15rem, 60vw); height: auto; margin: 1.6rem auto 0; overflow: visible; }
+.hero-line path {
+  fill: none; stroke: var(--teal); stroke-width: 1; stroke-linecap: round; opacity: 0.7;
+  stroke-dasharray: 1; stroke-dashoffset: 0;
+  animation: line-draw 2.2s var(--ease-out) 1.2s both;
+}
+.hero-line circle { fill: var(--star); transform-box: fill-box; transform-origin: center; animation: line-dot 0.8s ease-out 3.2s both; }
+@keyframes line-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes line-dot { from { opacity: 0; transform: scale(0.2); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .hero-line path, .hero-line circle { animation: none; } }

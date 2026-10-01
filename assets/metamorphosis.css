@@ -1,0 +1,30 @@
+/* The metamorphosis companion. metamorphosis.js builds it and decides where it
+   lives: a fixed lane in the right margin on wide screens, or a small slot in
+   the reader bar on narrow ones. It is decorative and never takes clicks. */
+
+.metamorphosis {
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 900ms var(--ease-out, ease-out);
+}
+.metamorphosis[data-mode="lane"] {
+  position: fixed; top: 0; height: 100vh; z-index: 5;
+}
+.metamorphosis[data-mode="lane"] .mm-svg { display: block; width: 100%; height: 100%; overflow: visible; }
+
+.mm-caption {
+  position: absolute; left: 0; right: 0; margin: 0;
+  text-align: center;
+  font-family: var(--quote); font-style: italic; font-size: 0.95rem; letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  transition: opacity 600ms var(--ease-out, ease-out);
+}
+
+/* docked in the reader bar on narrow screens */
+.rb-creature { display: none; }
+@media (max-width: 1099.98px) {
+  .rb-creature { display: block; flex: none; width: 2.3rem; height: 1.9rem; }
+}
+.metamorphosis[data-mode="docked"] { width: 100%; height: 100%; }
+.metamorphosis[data-mode="docked"] .mm-svg { display: block; width: 100%; height: 100%; }
+.metamorphosis[data-mode="docked"] .mm-caption { display: none; }
