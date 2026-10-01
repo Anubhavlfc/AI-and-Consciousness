@@ -420,9 +420,11 @@ footer a { color: var(--ink-soft); }
     <p class="statement">Maybe we are a bridge.</p>
     <figure class="bridge-fig" aria-label="From evolution to design">
       <div class="bf-stage" role="img" aria-label="Three figures walking left to right: an ape on all fours, a sketched human striding upright, and a humanoid robot ahead of them.">
-        <img src="img/bridge-1.jpg" width="410" height="589" loading="lazy" decoding="async" alt="" style="--i:0">
-        <img src="img/bridge-2.jpg" width="362" height="589" loading="lazy" decoding="async" alt="" style="--i:1">
-        <img src="img/bridge-3.jpg" width="398" height="589" loading="lazy" decoding="async" alt="" style="--i:2">
+        <img class="bf-fig f1" src="img/bridge-1.png" width="410" height="589" loading="lazy" decoding="async" alt="">
+        <img class="bf-fig f2" src="img/bridge-2.png" width="362" height="589" loading="lazy" decoding="async" alt="">
+        <img class="bf-fig f3" src="img/bridge-3.png" width="398" height="589" loading="lazy" decoding="async" alt="">
+        <img class="bf-ghost g1" src="img/bridge-1.png" width="410" height="589" loading="lazy" decoding="async" alt="" aria-hidden="true">
+        <img class="bf-ghost g2" src="img/bridge-2.png" width="362" height="589" loading="lazy" decoding="async" alt="" aria-hidden="true">
         <span class="bf-ground" aria-hidden="true"></span>
       </div>
       <ol class="bf-labels">
@@ -430,6 +432,7 @@ footer a { color: var(--ink-soft); }
         <li class="here" style="--x:48%"><span>We are here</span></li>
         <li style="--x:80%"><span>Shaped by design</span></li>
       </ol>
+      <button type="button" class="xp-btn bf-replay" hidden>Watch again</button>
     </figure>
     <p>For billions of years, evolution was limited to biology. Intelligence could only develop through DNA, natural selection, mutations, and reproduction. Changes that significantly improved intelligence could take thousands or millions of years.</p>
     <p>But something completely different happened when human beings appeared.</p>
