@@ -8,6 +8,10 @@
 <meta property="og:title" content="Not the Final Form">
 <meta property="og:description" content="Intelligence, consciousness, and whether humanity is a bridge. An essay by Anubhav Adhikari.">
 <meta property="og:image" content="https://anubhavlfc.github.io/AI-and-Consciousness/not-the-final-form/img/og.jpg">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%227%22 fill=%22%230b0d24%22/%3E%3Cpath d=%22M16 4c1 7 5 11 12 12-7 1-11 5-12 12-1-7-5-11-12-12 7-1 11-5 12-12z%22 fill=%22%23b9a4ff%22/%3E%3C/svg%3E">
+<meta name="theme-color" content="#0b0d24">
+<meta property="og:type" content="article">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap">
@@ -18,7 +22,7 @@
   --night-deep: #070818;
   --ink: #d9dcef;
   --ink-soft: #a6abcb;
-  --ink-faint: #6d7299;
+  --ink-faint: #7d82a8;
   --violet: #b9a4ff;
   --teal: #7fe3e0;
   --star: #f3e6b8;
@@ -49,17 +53,6 @@ body {
   text-rendering: optimizeLegibility;
 }
 ::selection { background: rgba(185, 164, 255, 0.35); color: #fff; }
-
-/* progress */
-.progress {
-  position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 10;
-  background: transparent; pointer-events: none;
-}
-.progress span {
-  display: block; height: 100%; width: 100%;
-  transform-origin: left; transform: scaleX(0);
-  background: linear-gradient(90deg, var(--teal), var(--violet));
-}
 
 /* hero */
 .hero {
@@ -338,27 +331,38 @@ footer {
   display: flex; flex-wrap: wrap; gap: 1rem 2rem; justify-content: space-between; align-items: center;
   font-size: 0.9rem; color: var(--ink-faint); border-top: 1px solid var(--rule);
 }
-footer button {
-  font: inherit; font-family: var(--display); font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase;
-  color: var(--ink); background: transparent; border: 1px solid var(--rule); border-radius: 999px;
-  padding: 0.65rem 1.2rem; cursor: pointer;
-}
-footer button:hover { border-color: var(--violet); color: #fff; }
 footer a { color: var(--ink-soft); }
 </style>
+<link rel="stylesheet" href="../assets/experience.css">
 </head>
 <body>
 
-<div class="progress" aria-hidden="true"><span id="bar"></span></div>
+<div class="readerbar" id="readerbar" data-visible="false">
+  <div class="rb-row">
+    <a class="rb-home" href="../" aria-label="All essays"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c.7 5 3.4 7.7 8.4 8.4-5 .7-7.7 3.4-8.4 8.4-.7-5-3.4-7.7-8.4-8.4C8.6 9.7 11.3 7 12 2z"/></svg></a>
+    <button type="button" class="rb-chapter" aria-expanded="false" aria-controls="rb-toc" aria-label="Chapters">
+      <span class="rb-num">I</span><span class="rb-title">The Question</span>
+      <svg class="rb-caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m1.5 3.5 3.5 3.5 3.5-3.5"/></svg>
+    </button>
+    <span class="rb-left" aria-live="off"></span>
+    <button type="button" class="rb-share" data-share>Share</button>
+  </div>
+  <nav class="rb-toc" id="rb-toc" aria-label="Chapters" hidden></nav>
+  <span class="rb-progress" aria-hidden="true"><span></span></span>
+</div>
 
 <header class="hero">
-  <img src="img/cover.jpg" alt="A crystalline human figure lit by circuitry stands beneath a glowing jellyfish-like form, while a lone person watches from below.">
+  <canvas class="stars" aria-hidden="true"></canvas>
+  <img src="img/cover.jpg" width="1200" height="2133" fetchpriority="high" alt="A crystalline human figure lit by circuitry stands beneath a glowing jellyfish-like form, while a lone person watches from below.">
   <div>
     <p class="kicker">An essay on artificial intelligence</p>
     <h1>Not the<br>Final Form</h1>
     <p class="sub">Intelligence, consciousness, and whether humanity is a bridge</p>
   </div>
-  <p class="byline">Anubhav Adhikari<small>About a 7 minute read</small></p>
+  <div>
+    <p class="byline">Anubhav Adhikari<small>About a 7 minute read</small></p>
+    <a class="cue" href="#question">Begin reading<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14"/><path d="m6 13 6 6 6-6"/></svg></a>
+  </div>
 </header>
 
 <nav class="contents" aria-label="Contents">
@@ -456,7 +460,7 @@ footer a { color: var(--ink-soft); }
   </section>
 
   <figure class="plate narrow">
-    <img src="img/figure.jpg" alt="A towering crystalline figure with glowing circuit lines across its chest, with a small human silhouette standing at its feet.">
+    <img src="img/figure.jpg" width="1400" height="1176" loading="lazy" decoding="async" alt="A towering crystalline figure with glowing circuit lines across its chest, with a small human silhouette standing at its feet.">
   </figure>
 
   <section class="chapter" id="flesh">
@@ -512,7 +516,7 @@ footer a { color: var(--ink-soft); }
   </section>
 
   <figure class="plate">
-    <img src="img/mandala.jpg" alt="A radiant, iridescent mandala-like form suspended in a beam of light inside a dark archway.">
+    <img src="img/mandala.jpg" width="1440" height="740" loading="lazy" decoding="async" alt="A radiant, iridescent mandala-like form suspended in a beam of light inside a dark archway.">
   </figure>
   <p class="question">At what point would we stop calling something an intelligence and begin calling it a god?</p>
 
@@ -569,7 +573,8 @@ footer a { color: var(--ink-soft); }
   </section>
 
   <section class="coda" aria-label="Closing">
-    <img src="img/ascent.jpg" alt="A jellyfish-like form of light rises from a crystalline human figure toward a glowing mandala above.">
+    <canvas class="stars" aria-hidden="true" style="z-index:1"></canvas>
+    <img src="img/ascent.jpg" width="1400" height="1361" loading="lazy" decoding="async" alt="A jellyfish-like form of light rises from a crystalline human figure toward a glowing mandala above.">
     <div class="words">
       <p class="not">Not as the final form.</p>
       <p class="but">But as the beginning of something much greater.</p>
@@ -578,31 +583,20 @@ footer a { color: var(--ink-soft); }
   </section>
 </main>
 
+<aside class="endnote" aria-label="Share this essay">
+  <h2>If this stayed with you, pass it on.</h2>
+  <p>Send it to someone who likes thinking about where intelligence is headed.</p>
+  <div class="xp-actions">
+    <button type="button" class="xp-btn" data-share>Share this essay</button>
+    <a class="xp-btn" href="../">More essays</a>
+  </div>
+</aside>
+
 <footer>
-  <a href="../">← All essays</a>
+  <a href="../">All essays</a>
   <span>© 2026 Anubhav Adhikari</span>
-  <button type="button" id="share">Copy link to essay</button>
 </footer>
 
-<script>
-(function () {
-  var bar = document.getElementById('bar');
-  function onScroll() {
-    var h = document.documentElement.scrollHeight - window.innerHeight;
-    bar.style.transform = 'scaleX(' + (h > 0 ? Math.min(1, window.scrollY / h) : 0) + ')';
-  }
-  window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll();
-
-  var btn = document.getElementById('share');
-  btn.addEventListener('click', function () {
-    var url = location.href.split('#')[0];
-    function done(msg) { btn.textContent = msg; setTimeout(function () { btn.textContent = 'Copy link to essay'; }, 2200); }
-    try {
-      navigator.clipboard.writeText(url).then(function () { done('Link copied'); }, function () { done(url); });
-    } catch (e) { done(url); }
-  });
-})();
-</script>
+<script src="../assets/experience.js" defer></script>
 </body>
 </html>

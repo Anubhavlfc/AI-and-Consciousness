@@ -1,0 +1,187 @@
+/* Reading experience layer shared by every page: starfield, hero entrance,
+   reader bar, share sheet, and quote sharing. Pages define the color and
+   font tokens (--night, --ink, --violet, --teal, --display, ...). */
+
+/* ---------- starfield ---------- */
+canvas.stars {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; z-index: 0;
+}
+.hero > div, .hero > .byline, .hero > .cue { position: relative; z-index: 1; }
+
+/* ---------- hero entrance (one orchestrated moment) ---------- */
+@keyframes xp-settle { from { transform: scale(1.09); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes xp-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@keyframes xp-focus {
+  from { opacity: 0; letter-spacing: 0.32em; filter: blur(14px); }
+  to { opacity: 1; letter-spacing: 0.06em; filter: blur(0); }
+}
+@keyframes xp-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(6px); } }
+
+.hero img { animation: xp-settle 2.6s cubic-bezier(.2,.7,.2,1) both; will-change: transform; }
+.hero .kicker { animation: xp-rise 1s 0.3s ease-out both; }
+.hero h1 { animation: xp-focus 1.9s 0.45s cubic-bezier(.2,.7,.2,1) both; }
+.hero .sub { animation: xp-rise 1.1s 1.5s ease-out both; }
+.hero .byline { animation: xp-rise 1.1s 1.9s ease-out both; }
+.hero .cue { animation: xp-rise 1s 2.4s ease-out both; }
+
+.cue {
+  display: inline-grid; justify-items: center; gap: 0.5rem;
+  margin-top: 1.6rem;
+  color: var(--ink-soft); text-decoration: none;
+  font-family: var(--quote); font-style: italic; font-size: 1.05rem;
+}
+.cue svg { width: 18px; height: 18px; animation: xp-bob 2.4s 3.4s ease-in-out infinite; }
+.cue:hover { color: #fff; }
+
+/* ---------- reader bar ---------- */
+.readerbar {
+  position: fixed; left: 0; right: 0; top: 0; z-index: 20;
+  padding-top: env(safe-area-inset-top, 0px);
+  background: rgba(9, 10, 30, 0.78);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--rule);
+  transform: translateY(-110%);
+  visibility: hidden;
+  /* exit runs faster than enter; visibility keeps the hidden bar out of the tab order */
+  transition: transform 0.28s cubic-bezier(.4,0,1,1), visibility 0s linear 0.28s;
+}
+.readerbar[data-visible="true"] {
+  transform: none; visibility: visible;
+  transition: transform 0.45s cubic-bezier(.2,.7,.2,1), visibility 0s;
+}
+/* keep anchored chapters and focused elements clear of the reader bar */
+html { scroll-padding-top: calc(4.5rem + env(safe-area-inset-top, 0px)); }
+.readerbar .rb-row {
+  max-width: 60rem; margin: 0 auto; padding: 0.55rem 16px;
+  display: flex; align-items: center; gap: 0.9rem;
+}
+.rb-home {
+  display: grid; place-items: center; width: 2rem; height: 2rem; flex: none;
+  color: var(--violet); text-decoration: none; border-radius: 50%;
+}
+.rb-home svg { width: 16px; height: 16px; }
+.rb-home:hover { color: #fff; background: rgba(185, 164, 255, 0.12); }
+.rb-chapter {
+  flex: 1; min-width: 0;
+  display: flex; align-items: baseline; gap: 0.7rem;
+  background: none; border: 0; padding: 0.3rem 0; cursor: pointer; text-align: left;
+  color: var(--ink); font: inherit;
+}
+.rb-num { font-family: var(--display); color: var(--violet); font-size: 0.85rem; min-width: 2.2rem; }
+.rb-title {
+  font-family: var(--display); font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rb-caret { width: 10px; height: 10px; flex: none; align-self: center; color: var(--ink-faint); transition: transform 0.25s; }
+.rb-chapter[aria-expanded="true"] .rb-caret { transform: rotate(180deg); }
+.rb-left { font-size: 0.85rem; color: var(--ink-faint); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.rb-share, .xp-btn {
+  font: inherit; font-family: var(--display); font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink); background: transparent; border: 1px solid var(--rule); border-radius: 999px;
+  padding: 0.5rem 1rem; cursor: pointer; white-space: nowrap;
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.rb-share:hover, .xp-btn:hover { border-color: var(--violet); color: #fff; background: rgba(185, 164, 255, 0.08); }
+.rb-progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; }
+.rb-progress span {
+  display: block; height: 100%; transform-origin: left; transform: scaleX(0);
+  background: linear-gradient(90deg, var(--teal), var(--violet));
+  box-shadow: 0 0 10px rgba(127, 227, 224, 0.6);
+}
+@media (max-width: 560px) {
+  .rb-left { display: none; }
+  .rb-num { min-width: 0; }
+}
+
+.rb-toc {
+  max-width: 60rem; margin: 0 auto; padding: 0.4rem 16px 1rem;
+}
+.rb-toc ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0 2rem; }
+.rb-toc a {
+  display: grid; grid-template-columns: 2.4rem 1fr; padding: 0.45rem 0;
+  color: var(--ink-soft); text-decoration: none;
+  font-family: var(--display); font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.rb-toc a span:first-child { color: var(--violet); }
+.rb-toc a[aria-current="true"] { color: #fff; }
+.rb-toc a[aria-current="true"] span:first-child { color: var(--teal); }
+.rb-toc a:hover { color: #fff; }
+
+/* ---------- share sheet ---------- */
+.xp-sheet {
+  position: fixed; z-index: 40; right: 16px; top: calc(3.8rem + env(safe-area-inset-top, 0px));
+  width: min(20rem, calc(100vw - 32px));
+  background: #14163a; border: 1px solid var(--rule); border-radius: 10px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.02) inset;
+  padding: 0.6rem;
+  animation: xp-rise 0.25s ease-out both;
+}
+.xp-sheet p {
+  margin: 0.3rem 0.5rem 0.6rem; font-family: var(--quote); font-style: italic; font-size: 1rem; line-height: 1.35;
+  color: var(--ink-soft); display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+.xp-sheet a, .xp-sheet button {
+  display: flex; align-items: center; gap: 0.8rem; width: 100%;
+  padding: 0.65rem 0.6rem; border-radius: 6px;
+  background: none; border: 0; cursor: pointer; text-align: left;
+  font: inherit; font-size: 1rem; color: var(--ink); text-decoration: none;
+}
+.xp-sheet a:hover, .xp-sheet button:hover, .xp-sheet a:focus-visible, .xp-sheet button:focus-visible { background: rgba(185, 164, 255, 0.1); color: #fff; }
+.xp-sheet svg { width: 18px; height: 18px; flex: none; color: var(--violet); }
+
+/* ---------- quote sharing ---------- */
+.pull { position: relative; }
+.pull .xp-quote {
+  position: absolute; left: 50%; bottom: -0.4rem; transform: translateX(-50%);
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  font-family: var(--body); font-style: normal; font-size: 0.8rem; letter-spacing: 0.02em;
+  color: var(--ink-faint); background: var(--night); border: 1px solid var(--rule); border-radius: 999px;
+  padding: 0.3rem 0.8rem; cursor: pointer;
+  opacity: 0; transition: opacity 0.25s, color 0.2s, border-color 0.2s;
+}
+.pull .xp-quote svg { width: 13px; height: 13px; }
+.pull:hover .xp-quote, .pull:focus-within .xp-quote { opacity: 1; }
+.pull .xp-quote:hover { color: #fff; border-color: var(--violet); }
+@media (hover: none) { .pull .xp-quote { opacity: 0.85; } }
+
+/* ---------- progression: light travelling down the ladder ---------- */
+@keyframes xp-travel { 0% { top: 1rem; opacity: 0; } 8% { opacity: 1; } 92% { opacity: 1; } 100% { top: calc(100% - 1rem); opacity: 0; } }
+.steps::after {
+  content: ""; position: absolute; left: calc(0.45rem - 3px); width: 7px; height: 7px; border-radius: 50%;
+  background: #fff; box-shadow: 0 0 12px 3px rgba(127, 227, 224, 0.8);
+  animation: xp-travel 7s ease-in-out infinite;
+}
+
+/* ---------- paintings settle as they arrive ---------- */
+figure.plate { overflow: hidden; }
+figure.plate img, .coda img { transition: transform 2.4s cubic-bezier(.2,.7,.2,1); }
+.xp-js figure.plate:not(.xp-in) img, .xp-js .coda:not(.xp-in) img { transform: scale(1.06); }
+
+/* ---------- end of essay ---------- */
+.endnote {
+  max-width: 36rem; margin: 0 auto; padding: 4rem 16px 1rem; text-align: center;
+}
+.endnote h2 {
+  font-family: var(--quote); font-style: italic; font-weight: 400;
+  font-size: clamp(1.4rem, 1.2rem + 1vw, 1.8rem); color: #eeeaff; margin: 0 0 0.5rem; text-wrap: balance;
+}
+.endnote p { color: var(--ink-soft); margin: 0 0 1.6rem; }
+.endnote .xp-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
+.endnote .xp-actions a { text-decoration: none; display: inline-flex; align-items: center; }
+
+/* toast */
+.xp-toast {
+  position: fixed; left: 50%; bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px)); z-index: 50;
+  transform: translateX(-50%);
+  background: #f4f2ff; color: #14163a; border-radius: 999px; padding: 0.55rem 1.2rem;
+  font-size: 0.95rem; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+  animation: xp-rise 0.25s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .steps::after { display: none; }
+  .xp-js figure.plate:not(.xp-in) img, .xp-js .coda:not(.xp-in) img { transform: none; }
+}
