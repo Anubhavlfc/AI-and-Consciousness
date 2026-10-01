@@ -334,12 +334,16 @@ footer {
 footer a { color: var(--ink-soft); }
 </style>
 <link rel="stylesheet" href="../assets/experience.css">
+<link rel="stylesheet" href="../assets/reading.css">
+<link rel="stylesheet" href="../assets/metamorphosis.css">
 </head>
 <body>
+<div class="atmosphere" aria-hidden="true"><span class="earth"></span><span class="dusk"></span><span class="dawn"></span></div>
 
 <div class="readerbar" id="readerbar" data-visible="false">
   <div class="rb-row">
     <a class="rb-home" href="../" aria-label="All essays"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c.7 5 3.4 7.7 8.4 8.4-5 .7-7.7 3.4-8.4 8.4-.7-5-3.4-7.7-8.4-8.4C8.6 9.7 11.3 7 12 2z"/></svg></a>
+    <span class="rb-creature" aria-hidden="true"></span>
     <button type="button" class="rb-chapter" aria-expanded="false" aria-controls="rb-toc" aria-label="Chapters">
       <span class="rb-num">I</span><span class="rb-title">The Question</span>
       <svg class="rb-caret" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m1.5 3.5 3.5 3.5 3.5-3.5"/></svg>
@@ -358,6 +362,7 @@ footer a { color: var(--ink-soft); }
     <p class="kicker">An essay on artificial intelligence</p>
     <h1>Not the<br>Final Form</h1>
     <p class="sub">Intelligence, consciousness, and whether humanity is a bridge</p>
+    <svg class="hero-line" viewBox="0 0 240 40" aria-hidden="true" focusable="false"><path d="M4 30 C 50 30, 70 8, 120 20 S 190 34, 228 10" pathLength="1"/><circle cx="228" cy="10" r="2.2"/></svg>
   </div>
   <div>
     <p class="byline">Anubhav Adhikari<small>About a 7 minute read</small></p>
@@ -598,5 +603,7 @@ footer a { color: var(--ink-soft); }
 </footer>
 
 <script src="../assets/experience.js" defer></script>
+<script src="../assets/reveal.js" defer></script>
+<script src="../assets/metamorphosis.js" defer></script>
 </body>
 </html>

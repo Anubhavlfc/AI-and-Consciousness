@@ -92,7 +92,7 @@ html { scroll-padding-top: calc(4.5rem + env(safe-area-inset-top, 0px)); }
 }
 @media (max-width: 560px) {
   .rb-left { display: none; }
-  .rb-num { min-width: 0; }
+  .rb-num { min-width: 0; flex: none; }
 }
 
 .rb-toc {
