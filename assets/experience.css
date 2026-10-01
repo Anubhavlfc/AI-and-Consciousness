@@ -160,16 +160,11 @@ figure.plate img, .coda img { transition: transform 2.4s cubic-bezier(.2,.7,.2,1
 .xp-js figure.plate:not(.xp-in) img, .xp-js .coda:not(.xp-in) img { transform: scale(1.06); }
 
 /* ---------- end of essay ---------- */
-.endnote {
   max-width: 36rem; margin: 0 auto; padding: 4rem 16px 1rem; text-align: center;
 }
-.endnote h2 {
   font-family: var(--quote); font-style: italic; font-weight: 400;
   font-size: clamp(1.4rem, 1.2rem + 1vw, 1.8rem); color: #eeeaff; margin: 0 0 0.5rem; text-wrap: balance;
 }
-.endnote p { color: var(--ink-soft); margin: 0 0 1.6rem; }
-.endnote .xp-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
-.endnote .xp-actions a { text-decoration: none; display: inline-flex; align-items: center; }
 
 /* toast */
 .xp-toast {

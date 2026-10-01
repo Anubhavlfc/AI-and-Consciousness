@@ -12,7 +12,7 @@
     // progress s. Selectors are essay landmarks; s runs 0 → 1.
     anchors: [
       { at: '#question', edge: 'top', s: 0.00 },
-      { at: '#metamorphosis .metamorph', edge: 'top', s: 0.22 },
+      { at: '#metamorphosis .metamorph:not([hidden]), #metamorphosis .mscene', edge: 'top', s: 0.22 },
       { at: '#metamorphosis', edge: 'bottom', s: 0.30 },
       { at: '#flesh', edge: 'top', s: 0.38 },
       { at: '#looking-back', edge: 'top', s: 0.50 },
@@ -248,7 +248,7 @@
   }
 
   /* ----- avoid sitting over wide text that leaves the column ----- */
-  var avoid = Array.prototype.slice.call(document.querySelectorAll('.coda .words, .question, .hero > div, .endnote'));
+  var avoid = Array.prototype.slice.call(document.querySelectorAll('.coda .words, .question, .hero > div'));
   function overText(px, py) {
     if (mode !== 'lane') return false;
     var X = lane.x + px, Y = py;

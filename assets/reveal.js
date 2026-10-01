@@ -10,8 +10,7 @@
     '.chapter > *',
     '.chapter .progression .ladder-wrap',
     'figure.plate',
-    '.question',
-    '.endnote'
+    '.question'
   ].join(',');
 
   var blocks = Array.prototype.filter.call(document.querySelectorAll(SELECTOR), function (el) {
